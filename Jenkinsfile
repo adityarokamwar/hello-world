@@ -7,12 +7,12 @@ pipeline {
     environment {
 
         MAVEN_HOME = '/usr/share/maven' // Path to Maven installation
-        // Use the exact server name you configured in Jenkins
-        SONARQUBE_ENV = 'Local SonarQube'  
-        // Name of the scanner tool configured in Jenkins
-        SONAR_SCANNER_INSTALL = 'SonarQube Scanner 4.7+'
-        // Credentials ID for your SonarQube token in Jenkins
+        SONARQUBE_SERVER = 'Local SonarQube'
+        // Scanner tool name (must match Jenkins Global Tools configuration)
+        SCANNER_NAME = 'SonarQube Scanner 4.7+'
+        // Credential ID in Jenkins for SonarQube token
         SONAR_TOKEN_CREDENTIAL_ID = 'sonar-token'
+        // Your actual SonarQube server URL
         SONAR_HOST_URL = 'http://13.239.36.249:9000'
 
     }
@@ -55,17 +55,17 @@ pipeline {
 
         }
 
-        stage('Run SonarQube Analysis') {
+        stage('SonarQube Analysis') {
             steps {
-                // Use the correct environment and tools
-                withSonarQubeEnv("${SONARQUBE_SERVER}") {
+                withSonarQubeEnv(env.SONARQUBE_SERVER) {
                     script {
-                        def scannerHome = tool 'SonarQube Scanner 4.7+'
+                        def scannerHome = tool(env.SCANNER_NAME)
+
                         sh """
                           ${scannerHome}/bin/sonar-scanner \
                             -Dsonar.projectKey=scmgalaxy1 \
                             -Dsonar.sources=server/src \
-                            -Dsonar.host.url=${SONAR_HOST_URL} \
+                            -Dsonar.host.url=${env.SONAR_HOST_URL} \
                             -Dsonar.login=${env.SONAR_TOKEN}
                         """
                     }
