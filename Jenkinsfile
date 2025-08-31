@@ -57,14 +57,18 @@ pipeline {
 
         stage('Run SonarQube Analysis') {
             steps {
-                withSonarQubeEnv("${SONARQUBE_ENV}") {
-                    sh '''
-                        ${tool "${SONAR_SCANNER_INSTALL}"}/bin/sonar-scanner \
-                          -Dsonar.projectKey=scmgalaxy1 \
-                          -Dsonar.sources=server/src \
-                          -Dsonar.host.url=${SONAR_HOST_URL} \
-                          -Dsonar.login=${SONAR_TOKEN}
-                    '''
+                // Use the correct environment and tools
+                withSonarQubeEnv("${SONARQUBE_SERVER}") {
+                    script {
+                        def scannerHome = tool 'SonarQube Scanner 4.7+'
+                        sh """
+                          ${scannerHome}/bin/sonar-scanner \
+                            -Dsonar.projectKey=scmgalaxy1 \
+                            -Dsonar.sources=server/src \
+                            -Dsonar.host.url=${SONAR_HOST_URL} \
+                            -Dsonar.login=${env.SONAR_TOKEN}
+                        """
+                    }
                 }
             }
         }
