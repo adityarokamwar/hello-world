@@ -13,7 +13,7 @@ pipeline {
         // Credential ID in Jenkins for SonarQube token
         SONAR_TOKEN_CREDENTIAL_ID = 'sonar-token'
         // Your actual SonarQube server URL
-        SONAR_HOST_URL = 'http://13.239.36.249:9000'
+        SONAR_HOST_URL = 'http://3.26.37.122:9000'
 
     }
 
